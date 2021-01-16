@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Text, FlatList } from "react-native";
 import { connect } from "react-redux";
+import { getActorByActorId } from "../api/themoviedb";
+import ActorListItem from "./ActorListItem";
 import DisplayError from "./DisplayError";
 
 const FavActors = ({ navigation, favActors }) => {
@@ -12,16 +14,19 @@ const FavActors = ({ navigation, favActors }) => {
     refreshFavActors();
   }, []);
 
+  useEffect(() => {
+    refreshFavActors();
+  }, [favActors]);
+
   const refreshFavActors = async () => {
     setIsRefreshing(true);
     setIsError(false);
     let actors = [];
     try {
       for (const id of favActors) {
-        const apiResult = await getActorById(id);
+        const apiResult = await getActorByActorId(id);
         actors.push(apiResult);
       }
-      console.log(actors);
       setActors(actors);
     } catch (error) {
       setIsError(true);
